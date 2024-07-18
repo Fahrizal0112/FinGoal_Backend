@@ -9,7 +9,15 @@ const CreateToken = (id) => {
 const Signup = async (req, res) => {
     const { username, email, password } = req.body;
     try {
-        const user = await User.create({ username, email, password });
+        let user = await User.findOne({ where: { username }});
+        if (user) {
+            return res.status(400).json({message: 'Username Already Exists!'});
+        }
+        user = await User.findOne({ where: { email }});
+        if (user) {
+            return res.status(400).json({ message: 'Email Already Exists!'});
+        }
+        user = await User.create({ username, email, password });
         res.status(201).json({ message: 'User Created Successfully '});
     } catch (error){
         res.status(500).json({ message: error.message });
