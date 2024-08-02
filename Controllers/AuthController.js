@@ -1,4 +1,4 @@
-const User = require('../models/UserModel');
+const User = require('../models/Models');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
@@ -40,7 +40,7 @@ const Signin = async (req, res) => {
             secure: process.env.NODE_ENV === 'fingoal',
             maxAge: parseInt(process.env.JWT_COOKIE_EXPIRES_IN),
         });
-        res.json({ message: `Login Successful! Welcome ${username}`});
+        res.json({ message: `Login Successful! Welcome ${username}`, token});
     } catch (error) {
         res.status(500).json({ message: error.message})
     }
