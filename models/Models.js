@@ -9,10 +9,9 @@ const sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USERNAME
 
 const User = sequelize.define('User', {
     id:{
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        unique:true,
+        type:DataTypes.BIGINT,
         primaryKey:true,
+        autoIncrement:true,
     },
     username: {
         type: DataTypes.STRING,
@@ -33,6 +32,10 @@ const User = sequelize.define('User', {
     lastname:{
         type: DataTypes.STRING,
         allowNull: false,
+    },
+    totalpoint:{
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
     },
     accountType: {
         type: DataTypes.ENUM('Konservatif', 'Moderat', 'Agresif'),
@@ -68,6 +71,9 @@ const Answer = sequelize.define('Answer', {
     answerText: {
         type: DataTypes.STRING,
         allowNull: false,
+    },
+    point: {
+        type: DataTypes.INTEGER,
     },
     questionId: {
         type: DataTypes.INTEGER,

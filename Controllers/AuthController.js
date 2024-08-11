@@ -1,4 +1,4 @@
-const User = require('../models/Models');
+const {User} = require('../models/Models');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
@@ -7,7 +7,7 @@ const CreateToken = (id) => {
 };
 
 const Signup = async (req, res) => {
-    const { username, email, password } = req.body;
+    const {firstname,lastname, username, email, password } = req.body;
     try {
         let user = await User.findOne({ where: { username }});
         if (user) {
@@ -17,7 +17,7 @@ const Signup = async (req, res) => {
         if (user) {
             return res.status(400).json({ message: 'Email Already Exists!'});
         }
-        user = await User.create({ username, email, password });
+        user = await User.create({ username, email, password,firstname,lastname });
         res.status(201).json({ message: 'User Created Successfully '});
     } catch (error){
         res.status(500).json({ message: error.message });

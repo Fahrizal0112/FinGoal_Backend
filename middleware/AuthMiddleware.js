@@ -1,22 +1,18 @@
 const jwt = require('jsonwebtoken');
-require('dotenv').config();
-const User = require('../models/UserModel');
+const { User } = require('../models/Models');
 
-const protect = async (req, res, next) => {
-    let token;
-    if (req.cookies.jwt) {
-        try {
-            token = req.cookies.jwt;
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            req.User = await User.findByPk(decoded.id, { attributes: { exclude: ['password'] }});
-            next();
-        } catch (error) {
-            res.status(401).json({message: 'Not Authorized, Token Invalid'});
-        }
-    }
-    if (!token) {
-        res.status(401).json({message: 'Not Authorized, No Token'});
+const authenticateToken = async (req, res, next) => {
+    const token = req.cookies.authorization;
+    if (!token) return res.status(401).json({ message: 'No token provided' });
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findByPk(decoded.id);
+        if (!user) return res.status(401).json({ message: 'Invalid token' });
+        req.userId = user.id;
+        next();
+    } catch (error) {
+        res.status(403).json({ message: 'Token is not valid' });
     }
 };
 
-module.exports = { protect };
+module.exports = authenticateToken;

@@ -1,4 +1,5 @@
-const { Answer,Question } = require('../models/Models');
+const { where } = require('sequelize');
+const { Answer,Question, User } = require('../models/Models');
 
 const createQuestion = async (req, res) => {
     try {
@@ -26,12 +27,12 @@ const getQuestions = async (req, res) => {
 
 const createAnswer = async (req, res) => {
     try {
-        const { questionId, answerText } = req.body;
+        const { questionId, answerText, point } = req.body;
         
         if (!questionId || !answerText) {
             return res.status(400).json({ message: 'Question ID and answer text are required' });
         }
-        const answer = await Answer.create({ questionId, answerText });
+        const answer = await Answer.create({ questionId, answerText, point });
         res.status(201).json({ message: 'Answer created successfully', answer });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -53,4 +54,39 @@ const getAnswersByQuestionId = async (req, res) => {
     }
 };
 
-module.exports = { createQuestion, getQuestions , createAnswer, getAnswersByQuestionId };
+const submitAnswers = async (req, res) => {
+    try {
+        const { answers } = req.body;
+        
+        if (!answers || !Array.isArray(answers)) {
+            return res.status(400).json({ message: 'Invalid answers format' });
+        }
+        let totalPoints = 0;
+        for (const answer of answers) {
+            const ans = await Answer.findByPk(answer.answerId);
+            if (ans) {
+                totalPoints += ans.point;
+            }
+        }
+
+        let accountType;
+        if (totalPoints < 20) {
+            accountType = 'Konservatif';
+        } else if (totalPoints < 40) {
+            accountType = 'Moderat';
+        } else {
+            accountType = 'Agresif';
+        }
+
+        await User.update(
+            { totalpoint: totalPoints, accountType },
+            { where: { id: req.userId } }
+        );
+
+        res.status(200).json({ message: 'Answers submitted and user updated', totalPoints, accountType });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+module.exports = { createQuestion, getQuestions , createAnswer, getAnswersByQuestionId, submitAnswers };
