@@ -40,10 +40,6 @@ const User = sequelize.define('User', {
     accountType: {
         type: DataTypes.ENUM('Konservatif', 'Moderat', 'Agresif'),
     },
-    balance: {
-        type: DataTypes.FLOAT,
-        defaultValue: 0.0
-    },
     createdAt:{
         type:DataTypes.DATE,
         defaultValue: DataTypes.NOW
@@ -84,6 +80,36 @@ const Answer = sequelize.define('Answer', {
     },
 });
 
+const Saving = sequelize.define('Saving', {
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+    },
+    Ownerid: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    goal: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+    moneygoal: {
+        type: DataTypes.FLOAT,
+        defaultValue: 0.0
+    },
+    duration: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+    },
+    frequency: {
+        type: DataTypes.ENUM('Harian', 'Bulanan', 'Tahunan'),
+    },
+    monthly: {
+        type: DataTypes.INTEGER,
+    },
+});
+
 User.beforeCreate(async (user) => {
     const salt = await bcrypt.genSalt(16);
     user.password = await bcrypt.hash(user.password, salt);
@@ -95,4 +121,4 @@ User.prototype.matchpassword = async function(password) {
 
 sequelize.sync();
 
-module.exports = {User, Question, Answer} ;
+module.exports = {User, Question, Answer, Saving} ;
