@@ -70,9 +70,9 @@ const submitAnswers = async (req, res) => {
         }
 
         let accountType;
-        if (totalPoints < 20) {
+        if (totalPoints < 40) {
             accountType = 'Konservatif';
-        } else if (totalPoints < 40) {
+        } else if (totalPoints < 60) {
             accountType = 'Moderat';
         } else {
             accountType = 'Agresif';
