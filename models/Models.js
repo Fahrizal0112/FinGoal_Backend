@@ -86,6 +86,10 @@ const Saving = sequelize.define('Saving', {
         autoIncrement: true,
         primaryKey: true,
     },
+    Ownerid: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
     goal: {
         type: DataTypes.STRING,
         allowNull: true,
