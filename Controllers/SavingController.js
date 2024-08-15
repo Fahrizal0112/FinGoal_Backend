@@ -2,17 +2,11 @@ const { Saving, User } = require("../models/Models");
 
 const CreateSavings = async (req, res) => {
     try {
-        const Ownerid = req.userId;
-
         const { goal, moneygoal, duration, frequency, monthly } = req.body;
 
         if (!moneygoal || !frequency || !monthly || !duration) {
             return res.status(400).json({ message: "moneygoal, frequency, monthly, dan duration tidak boleh kosong." });
         }
-
-        const user = await User.findByPk(Ownerid);
-        if (!user) return res.status(404).json({ message: "Pengguna tidak ditemukan." });
-
         const totalMoneyGoal = parseFloat(moneygoal); 
         const monthlySaving = parseFloat(monthly);
         const savingDuration = parseInt(duration); 
@@ -63,7 +57,6 @@ const CreateSavings = async (req, res) => {
         }
 
         const newSaving = await Saving.create({
-            Ownerid,
             goal,
             moneygoal,
             duration,

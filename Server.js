@@ -26,5 +26,5 @@ sequelize.sync({ alter: true })
 fingoal.use('/fingoal', authRoutes);
 
 fingoal.listen(process.env.PORT, () => {
-    console.log(`App Listening On http://localhost:${process.env.PORT}`);
+    console.log(`App Listening On http://0.0.0.0:${process.env.PORT}`);
 });
